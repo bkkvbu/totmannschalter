@@ -1,0 +1,102 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  totmannschalter
+
+  SAM Template for totmannschalter
+Parameters:
+  DomainName:
+    Type: String
+    Default: "totmannschalter.com"
+  Stage:
+    Type: String
+    Default: prod
+  HostedZoneId:
+    Type: String
+    Default: "Z0254395ZFAKSAIO83OK"
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  ApiSlackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Events:
+        Slack:
+          Type: Api
+          Properties:
+            Path: /slack/{slack_path+}
+            Method: post
+            RestApiId: !Ref Api
+      CodeUri: slack/
+      Handler: api.lambda_handler
+      Runtime: python3.8
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref ApiSlackTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApiSlackTable
+
+  ApiSlackCronFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: slack/
+      Handler: cron.lambda_handler
+      Runtime: python3.8
+      Events:
+        Cron:
+          Type: Schedule # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Schedule: "rate(1 minute)"
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref ApiSlackTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApiSlackTable
+
+  ApiSlackTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-slack-notifications"
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      Domain:
+        CertificateArn: !Ref ApiCert
+        DomainName: !Ref DomainName
+        Route53:
+          HostedZoneId: !Sub "${HostedZoneId}"
+      Name: !Sub "${AWS::StackName}"
+      StageName: !Sub "${Stage}"
+
+  ApiCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Sub "${HostedZoneId}"
+      SubjectAlternativeNames:
+        - !Sub "*.${DomainName}"
+      ValidationMethod: "DNS"
+
+Outputs:
+  ApiSlack:
+    Description: "URL for Slack API function"
+    Value: !Sub "https://${DomainName}/slack/{id+}"
+  InternalAWSDomian:
+    Description: "Internal AWS Domain"
+    Value: !Sub "${Api}.execute-api.${AWS::Region}.amazonaws.com"

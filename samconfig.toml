@@ -1,0 +1,28 @@
+version = 0.1
+[dev]
+
+[dev.package.parameters]
+region = "eu-central-1"
+
+[dev.deploy.parameters]
+stack_name = "totmannschalter-dev"
+s3_prefix = "totmannschalter-dev"
+region = "eu-central-1"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+tags = "app=\"totmannschalter\" stage=\"dev\""
+parameter_overrides = "Stage=dev DomainName=dev.totmannschalter.com HostedZoneId=Z0254395ZFAKSAIO83OK"
+
+[prod]
+
+[prod.package.parameters]
+region = "eu-central-1"
+
+[prod.deploy.parameters]
+stack_name = "totmannschalter-prod"
+s3_prefix = "totmannschalter-prod"
+region = "eu-central-1"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+tags = "app=\"totmannschalter\" stage=\"prod\""
+parameter_overrides = "Stage=prod DomainName=totmannschalter.com HostedZoneId=Z0254395ZFAKSAIO83OK"
