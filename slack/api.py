@@ -9,9 +9,9 @@ client = boto3.client('dynamodb')
 
 
 def lambda_handler(event, context):
-    slack_path = event["pathParameters"]["id"]
+    slack_path = event["pathParameters"]["slack_path"]
     # TODO validate slack_path
-    print(f"Got id: {slack_path}")
+    print(f"Got slack_path: {slack_path}")
 
     ttl_minutes = 5
     ttl = str(int(time.time() + ttl_minutes * 60))
@@ -34,6 +34,6 @@ def lambda_handler(event, context):
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "message": event["pathParameters"]["id"],
+            "message": "Updated entry",
         }),
     }
