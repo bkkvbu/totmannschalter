@@ -69,7 +69,7 @@ def lambda_handler(event, context):
                         "elements": [
                             {
                                 "type": "mrkdwn",
-                                "text": ":skull_and_crossbones: Brought to you by https://www.totmannschalter.com"
+                                "text": ":skull_and_crossbones: Brought to you by http://www.totmannschalter.com"
                             }
                         ]
                     }
