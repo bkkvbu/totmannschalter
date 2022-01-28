@@ -26,7 +26,7 @@ def test_update_nonexisting_item(id: str, ttl: str, insert_if_not_exists: bool):
                 'HTTPHeaders': {'header metadata key/values will appear here'},
                 'RetryAttempts': 0
             }
-        })
+        }, "UpdateItem")
 
 
 class TestLambdaHandler(unittest.TestCase):
@@ -38,6 +38,16 @@ class TestLambdaHandler(unittest.TestCase):
             }
         }
         slack.api.update_item = test_upsert_item
+
+        self.assertIn('Updated entry', lambda_handler(event, None)['body'])
+
+    def test_new_entry(self):
+        event = {
+            'pathParameters': {
+                'slack_path': 'foo/bar'
+            }
+        }
+        slack.api.update_item = test_update_nonexisting_item
 
         self.assertIn('Updated entry', lambda_handler(event, None)['body'])
 
