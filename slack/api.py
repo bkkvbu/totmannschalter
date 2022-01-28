@@ -2,11 +2,10 @@ import json
 import os
 import time
 
-# import requests
 import boto3 as boto3
 from botocore.exceptions import ClientError
 
-from slack.notification import notify, newuser_notification
+from notification import notify, newuser_notification
 
 client = boto3.client('dynamodb')
 
@@ -57,6 +56,6 @@ def lambda_handler(event, context):
 if __name__ == '__main__':
     lambda_handler({
         'pathParameters': {
-            'slack_path': 'TB7TK18DD/B03074WD8P'
+            'slack_path': 'foo/bar'
         }
     }, None)
