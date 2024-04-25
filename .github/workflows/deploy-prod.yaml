@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: sam build
-        uses: youyo/aws-sam-action/python3.8@v2
+        uses: docker://public.ecr.aws/sam/build-python3.12:1
         with:
           sam_command: build
         env:
@@ -18,7 +18,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
       - name: sam deploy
-        uses: youyo/aws-sam-action/python3.8@v2
+        uses: docker://public.ecr.aws/sam/build-python3.12:1
         with:
           sam_command: 'deploy --config-env prod --resolve-s3 --no-fail-on-empty-changeset --no-confirm-changeset'
         env:
