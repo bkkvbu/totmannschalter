@@ -7,7 +7,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: sam build
-        uses: public.ecr.aws/sam/build-python3.12@v1
+        uses: sam/build-python3.11@v1
         with:
           sam_command: build
         env:
@@ -15,7 +15,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
       - name: sam deploy
-        uses: public.ecr.aws/sam/build-python3.12@v1
+        uses: sam/build-python3.11@v1
         with:
           sam_command: 'deploy --config-env dev --resolve-s3 --no-fail-on-empty-changeset --no-confirm-changeset'
         env:
