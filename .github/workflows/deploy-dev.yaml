@@ -9,7 +9,7 @@ jobs:
       - name: sam build
         uses: docker://public.ecr.aws/sam/build-python3.12:1
         with:
-          entrypoint: /bin/bash
+          #entrypoint: /bin/bash
           #args: 'sam build'
           args: 'which sam'
         env:
