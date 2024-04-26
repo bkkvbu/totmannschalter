@@ -10,8 +10,7 @@ jobs:
         uses: docker://public.ecr.aws/sam/build-python3.12:1
         with:
           #entrypoint: /bin/bash
-          #args: 'sam build'
-          args: 'which sam'
+          args: 'sam build'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -19,7 +18,7 @@ jobs:
       - name: sam deploy
         uses: docker://public.ecr.aws/sam/build-python3.12:1
         with:
-          entrypoint: /bin/bash
+          #entrypoint: /bin/bash
           args: 'sam deploy --config-env dev --resolve-s3 --no-fail-on-empty-changeset --no-confirm-changeset'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
